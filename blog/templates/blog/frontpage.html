@@ -1,0 +1,111 @@
+{% extends "blog/base.html" %} {% block content %}
+<div class="columns">
+  <div class="column">
+    <div class="table-container">
+      <table class="table is-fullwidth">
+        <thead>
+          <tr>
+            <th>
+              <div class="field is-flex" style="justify-content: space-between">
+                <form method="get" action="{% url 'frontpage' %}">
+                  <input
+                    name="query"
+                    value="{{ request.GET.query }}"
+                    class="input is-rounded"
+                    type="text"
+                    placeholder="search"
+                    style="max-width: 240px"
+                  />
+                  <button type="submit" hidden>
+                    検索する、Hiddenで隠す予定
+                  </button>
+                </form>
+                <form method="post" action="{% url 'frontpage' %}">
+                  {% csrf_token %}
+                  <input class="button is-danger" type="submit" value="Add" />
+                </form>
+              </div>
+            </th>
+            <!-- <th>Header 2</th> -->
+          </tr>
+        </thead>
+        <tbody>
+          {% for post in posts %}
+          <tr class="box custom-hover">
+            <td>
+              <!-- <a href="{% url 'post_detail' post.slug %}">{{post.title}}</a> -->
+              <a href="{% url 'post_detail' post.slug %}">
+                <section>
+                  {{ post.title }}
+                  <div style="text-align: right; font-style: italic">
+                    <small>Noted at {{post.posted_date}}</small>
+                  </div>
+                </section>
+              </a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="column">
+    <div class="field">
+      <form method="POST" action="{% url 'frontpage_save' %}">
+        {% csrf_token %}
+        <div
+          class="field is-flex"
+          style="
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-top: 8px;
+          "
+        >
+          <input
+            class="button is-danger"
+            type="submit"
+            value="Save"
+            name="saveClick"
+          />
+          <input
+            class="button is-danger"
+            type="submit"
+            value="Delate"
+            name="deleteClick"
+          />
+        </div>
+        <!-- <label for="yourTextarea"></label>
+        <input type="hidden" name="hidden_data" value="{{post.slug}}" />
+        <textarea class="textarea" rows="20" id="yourTextarea" name="your_text">
+{{post.body}}</textarea
+        > -->
+        <label for="yourTextarea"></label>
+        <input type="hidden" name="hidden_data" value="{{ post.slug }}" />
+
+        {% if post.slug %}
+        <textarea
+          class="textarea"
+          rows="20"
+          id="yourTextarea"
+          name="your_text"
+          autofocus
+        >
+{{ post.body }}</textarea
+        >
+        {% else %}
+        <textarea
+          class="textarea"
+          rows="20"
+          id="yourTextarea"
+          name="your_text"
+          readonly
+        >
+{{ post.body }}</textarea
+        >
+        {% endif %}
+        <br />
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock%}
